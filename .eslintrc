@@ -1,0 +1,27 @@
+{
+  "parser": "babel-eslint",
+  "plugins": [
+    "react",
+    "react-native"
+  ],
+  "env": {
+    "react-native/react-native": true,
+  },
+  "rules": {
+    "react-native/split-platform-components": 2,
+    "react-native/no-inline-styles": 2,
+    "react-native/no-color-literals": 2,
+    "block-spacing": [ 2 ],
+    "no-spaced-func": [ 2 ],
+    "curly": [ 2, "multi-line" ],
+    "semi": [ 2, "never" ],
+    "comma-dangle": ["error", "always"],
+  },
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "sourceType": "module",
+    "ecmaFeatures": {
+        "jsx": true,
+    }
+  },
+}
