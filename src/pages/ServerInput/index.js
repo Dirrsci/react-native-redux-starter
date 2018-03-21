@@ -5,7 +5,7 @@ import React, { Component, } from 'react'
 import { connect, } from 'react-redux'
 import { View, Text, StyleSheet, } from 'react-native'
 
-import { FetchCoinData, } from './modules'
+import { FetchCoinData, fetchingCoinData } from './modules'
 
 let blue = 'blue'
 const styles = StyleSheet.create({
@@ -48,5 +48,5 @@ function mapStateToProps(state) {
 
 export default function(store) {
   injectReducer(store, { key: 'crypto', reducer, })
-  return connect(mapStateToProps, { FetchCoinData, })(CryptoContainer)
+  return connect(mapStateToProps, { FetchCoinData, fetchingCoinData })(CryptoContainer)
 }

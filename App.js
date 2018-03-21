@@ -9,7 +9,7 @@ import { View, StyleSheet, Text, } from 'react-native'
 import { Provider, } from 'react-redux'
 
 import Store from './src/store'
-// import Pages from './src/pages'
+import Pages from './src/pages'
 
 const styles = StyleSheet.create({
   container: {
@@ -21,11 +21,10 @@ const styles = StyleSheet.create({
 })
 
 class App extends Component {
-  // <Pages />
   render() {
     return (
       <Provider store={Store}>
-        <Text>Testing</Text>
+        <Pages />
       </Provider>
     )
   }

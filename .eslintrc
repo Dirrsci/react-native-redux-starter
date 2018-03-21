@@ -15,7 +15,6 @@
     "no-spaced-func": [ 2 ],
     "curly": [ 2, "multi-line" ],
     "semi": [ 2, "never" ],
-    "comma-dangle": ["error", "always"],
   },
   "parserOptions": {
     "ecmaVersion": 7,
