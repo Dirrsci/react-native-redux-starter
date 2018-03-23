@@ -4,75 +4,93 @@ cleaner since all the related files will be next to one another
 */
 import axios from 'axios'
 import { apiBaseUrl, } from '../../constants/urls'
+import { AsyncStorage } from 'react-native'
 
-// Action types
-export const FETCHING_COIN_DATA = 'FETCHING_COIN_DATA'
-export const FETCHING_COIN_DATA_SUCCESS = 'FETCHING_COIN_DATA_SUCCESS'
-export const FETCHING_COIN_DATA_FAIL = 'FETCHING_COIN_DATA_FAIL'
+// Action types (these are global and shoudln't be reused from other pages)
+export const SERVER_INPUT__SET_SERVER_IP = 'SERVER_INPUT__SET_SERVER_IP'
+export const SERVER_INPUT__SET_INPUT_TEXT = 'SERVER_INPUT__SET_INPUT_TEXT'
+export const SERVER_INPUT__SET_ERROR = 'SERVER_INPUT__SET_ERROR'
+export const SERVER_INPUT__SET_IS_LOADING  = 'SERVER_INPUT__SET_IS_LOADING'
 
 // Plain Actions
-export function fetchingCoinData() {
-  return { type: FETCHING_COIN_DATA }
+export function setTextInputVal(text) {
+  return { type: SERVER_INPUT__SET_INPUT_TEXT, payload: text }
 }
-export function fetchingCoinDataSuccess(payload) {
-  return { type: FETCHING_COIN_DATA_SUCCESS, payload }
+
+export function setErrorMessage(err) {
+  return { type: SERVER_INPUT__SET_ERROR, payload: err }
 }
-export function fetchingCoinDataFail(payload) {
-  return { type: FETCHING_COIN_DATA_FAIL, payload }
+
+export function setServerIp(ip) {
+  return { type: SERVER_INPUT__SET_SERVER_IP, payload: ip }
+}
+
+export function setIsLoading(isLoading) {
+  return { type: SERVER_INPUT__SET_IS_LOADING, payload: isLoading }
+}
+
+export function isValidIp(ip) {
+  if (!ip) return false
+  let hasMatch = ip.match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gm)
+  return !!hasMatch
 }
 
 // Thunk Actions
 // NOTE: do NOT use inline actions, ALWAYS call a plain action to dispatch
-export function FetchCoinData() {
+export function saveServerIp(ip) {
   return async dispatch => {
-    // notify the UI that we are fetching
-    dispatch(fetchingCoinData())
+    let errorMessage = `Invalid Ip Address ${ip}`
+    if (!isValidIp(ip)) return dispatch(setErrorMessage(errorMessage))
     try {
-      let res = await axios.get(`${apiBaseUrl}/v1/ticker/?limit=10`)
-      dispatch(fetchingCoinDataSuccess(res.data))
-    } catch (err) {
-      dispatch(fetchingCoinDataFail(err))
+      await AsyncStorage.setItem('@Storage:serverIp', ip)
+      dispatch(setServerIp(ip))
+    } catch (e) {
+      dispatch(setErrorMessage(errorMessage))
     }
   }
 }
 
 // Reducers
 export const REDUCERS = {
-  [FETCHING_COIN_DATA]: (state, action) => {
+  [SERVER_INPUT__SET_INPUT_TEXT]: (state, action) => {
     return {
       ...state,
-      isFetching: true,
-      data: null,
+      inputText: action.payload,
       hasError: false,
       errorMessage: null,
     }
   },
-  [FETCHING_COIN_DATA_SUCCESS]: (state, action) => {
+  [SERVER_INPUT__SET_SERVER_IP]: (state, action) => {
     return {
       ...state,
-      isFetching: false,
-      data: action.payload,
+      serverIp: action.payload,
+      // inputText: '',
       hasError: false,
       errorMessage: null,
     }
   },
-  [FETCHING_COIN_DATA_FAIL]: (state, action) => {
+  [SERVER_INPUT__SET_IS_LOADING]: (state, action) => {
     return {
       ...state,
-      isFetching: false,
-      data: action.payload,
+      isLoading: action.payload
+    }
+  },
+  [SERVER_INPUT__SET_ERROR]: (state, action) => {
+    return {
+      ...state,
       hasError: true,
-      errorMessage: action.err,
+      errorMessage: action.payload,
     }
   },
 }
 
 // initial state
 const initialState = {
-  isFetching: null,
-  data: [],
+  serverIp: null,
+  inputText: '',
   hasError: false,
   errorMessage: null,
+  isLoading: true, // first action is to load ip from memory, so we can assume this from the start
 }
 
 // when an action gets dispatched callReducer will invoke the reducer that corresponds

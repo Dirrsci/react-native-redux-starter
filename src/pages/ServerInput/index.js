@@ -1,40 +1,63 @@
-import { injectReducer, } from '../../store/reducers'
-import reducer from './modules'
-
 import React, { Component, } from 'react'
 import { connect, } from 'react-redux'
-import { View, Text, StyleSheet, } from 'react-native'
+import { NavigationActions } from 'react-navigation'
+import { View, Text, StyleSheet, ScrollView, TextInput, Button, AsyncStorage } from 'react-native'
 
-import { FetchCoinData, fetchingCoinData } from './modules'
+import { composeComponent } from '../../utils'
+import { injectReducer, } from '../../store/reducers'
+// we import all the exports from the modules folder for our actions and reducer
+import * as modules from './modules'
+let mapDispatchToProps = { ...modules }
+let reducer = modules.default
 
-let blue = 'blue'
-const styles = StyleSheet.create({
-  headerContainer: {
-    // display: 'flex',
-    // backgroundColor: blue,
-    // flex: 1,
-    // width: '100%',
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-})
+import styles from './styles'
 
-class CryptoContainer extends Component {
+class ServerInput extends Component {
   static navigationOptions = {
-    title: 'testing',
+    title: 'Enter IP Address',
   }
 
-  componentDidMount() {
-    this.props.FetchCoinData()
+  goToNextPage() {
+    // we use resetAction to empty the navigation stack prevent 'back' button from appearing
+    let resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Equipment' })]
+    })
+    this.props.navigation.dispatch(resetAction)
+  }
+
+  // set Redux state if an ip address has already been saved to memory
+  async componentDidMount() {
+    let storedSterverIp = await AsyncStorage.getItem('@Storage:serverIp')
+    this.props.saveServerIp(storedSterverIp)
+    this.props.setIsLoading(false)
+    // if (!this.props.serverInput.hasError) this.goToNextPage()
+  }
+
+  async onSave() {
+    let { inputText } = this.props.serverInput
+    this.props.saveServerIp(inputText)
+    this.goToNextPage()
   }
 
   render() {
+    let { serverIp, inputText, hasError, errorMessage, isLoading } = this.props.serverInput
+    if (isLoading) return null
     return (
-      <View>
-        <Text>Container</Text>
-        <Text>{JSON.stringify(this.props.crypto)}</Text>
+      <View style={styles.container}>
+        <Text>{ this.props.serverInput.serverIp }</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder='Enter Server IP'
+          onChangeText={this.props.setTextInputVal}
+        />
+        <Button
+          onPress={this.onSave.bind(this)}
+          title='Save'
+          color='#841584'
+          accessibilityLabel='Save Server IP Address'
+        />
+        <Text style={styles.error}>{ hasError && errorMessage }</Text>
       </View>
     )
   }
@@ -42,11 +65,16 @@ class CryptoContainer extends Component {
 
 function mapStateToProps(state) {
   return {
-    crypto: state.crypto,
+    serverInput: state.serverInput,
   }
 }
 
+// this function allows us to inject this page's reducer into the rootReducer as
+// well as connect it to our redux store. composeComponent is used to add any
+// additional wrappers the component may need. These are passed in the router
 export default function(store) {
-  injectReducer(store, { key: 'crypto', reducer, })
-  return connect(mapStateToProps, { FetchCoinData, fetchingCoinData })(CryptoContainer)
+  injectReducer(store, { key: 'serverInput', reducer, })
+  // we return a function that our router can call with an array of component wrappers
+  let connectFunc = connect(mapStateToProps, mapDispatchToProps)
+  return composeComponent(connectFunc, ServerInput)
 }

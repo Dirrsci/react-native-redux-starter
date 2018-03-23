@@ -25,7 +25,8 @@ class Equipment extends Component {
 
 function mapStateToProps(state) {
   return {
-    namespace: state.namespace,
+    equipment: state.equipment,
+    serverIp: state.serverInput.serverIp
   }
 }
 
@@ -33,7 +34,7 @@ function mapStateToProps(state) {
 // well as connect it to our redux store. composeComponent is used to add any
 // additional wrappers the component may need. These are passed in the router
 export default function(store) {
-  injectReducer(store, { key: 'namespace', reducer, })
+  injectReducer(store, { key: 'equipment', reducer, })
   // we return a function that our router can call with an array of component wrappers
   let connectFunc = connect(mapStateToProps, mapDispatchToProps)
   return composeComponent(connectFunc, Equipment)
