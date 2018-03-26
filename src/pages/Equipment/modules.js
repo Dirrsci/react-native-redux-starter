@@ -13,17 +13,11 @@ export const EQUIPMENT__ = 'EQUIPMENT__'
 
 // Thunk Actions
 // NOTE: do NOT use inline actions, ALWAYS call a plain action to dispatch
-export function saveServerIp(ip) {
-  return async dispatch => {
-    if (!isValidIp(ip)) return dispatch(setErrorMessage(`Invalid Ip Address ${ip}`))
 
-    try {
-      await AsyncStorage.setItem('@Storage:serverIp', ip)
-      dispatch(setServerIp(ip))
-    } catch (e) {
-      dispatch(setErrorMessage(`Invalid Ip Address ${ip}`))
-    }
-  }
+
+// any actions you may need in your component needs to be exported here
+export const actions = {
+
 }
 
 // Reducers
@@ -39,10 +33,7 @@ export const REDUCERS = {
 
 // initial state
 const initialState = {
-  serverIp: null,
-  inputText: '',
-  hasError: false,
-  errorMessage: null,
+
 }
 
 // when an action gets dispatched callReducer will invoke the reducer that corresponds

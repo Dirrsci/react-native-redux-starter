@@ -11,32 +11,18 @@ import requireIp from '../utils/requireIP'
 /*
 Every route that needs access to Redux must be passed the "Store" to connect to
 You can then call the
+
+each Top level "page" uses react-navigation, so see their docs if you need to make
+any navigation changes
 */
-
-function NavWrapper(Comp, title) {
-  class PageWrapper extends React.Component {
-    static navigationOptions = { title, }
-    render() {
-      return <Comp />
-    }
-  }
-  return PageWrapper
-}
-
 const Router = StackNavigator({
   ServerInput: {
-    screen: NavWrapper(ServerInput(Store)([]), 'title')
-    // screen: function() {
-    //   this.title = 'something'
-    //   let ServerInputComp = ServerInput(Store)([])
-    //   return (
-    //     <ServerInputComp />
-    //   )
-    // }
+    // TODO: need to find a way to handle the nativation header
+    screen: ServerInput([ ])
   },
-  // Equipment: {
-  //   screen: Equipment(Store)([ ])
-  // }
+  Equipment: {
+    screen: Equipment([ requireIp ])
+  }
 }, {
   initialRouteName: 'ServerInput',
 })

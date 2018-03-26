@@ -18,3 +18,6 @@ New page:
 pages/<PAGE_NAME>/index.js,modules.js,test.js
 
 2.
+
+
+commenting out JSX does not work

@@ -6,6 +6,8 @@ import axios from 'axios'
 import { apiBaseUrl, } from '../../constants/urls'
 import { AsyncStorage } from 'react-native'
 
+import { isValidIp } from '../../utils'
+
 // Action types (these are global and shoudln't be reused from other pages)
 export const SERVER_INPUT__SET_SERVER_IP = 'SERVER_INPUT__SET_SERVER_IP'
 export const SERVER_INPUT__SET_INPUT_TEXT = 'SERVER_INPUT__SET_INPUT_TEXT'
@@ -13,31 +15,25 @@ export const SERVER_INPUT__SET_ERROR = 'SERVER_INPUT__SET_ERROR'
 export const SERVER_INPUT__SET_IS_LOADING  = 'SERVER_INPUT__SET_IS_LOADING'
 
 // Plain Actions
-export function setTextInputVal(text) {
+function setTextInputVal(text) {
   return { type: SERVER_INPUT__SET_INPUT_TEXT, payload: text }
 }
 
-export function setErrorMessage(err) {
+function setErrorMessage(err) {
   return { type: SERVER_INPUT__SET_ERROR, payload: err }
 }
 
-export function setServerIp(ip) {
+function setServerIp(ip) {
   return { type: SERVER_INPUT__SET_SERVER_IP, payload: ip }
 }
 
-export function setIsLoading(isLoading) {
+function setIsLoading(isLoading) {
   return { type: SERVER_INPUT__SET_IS_LOADING, payload: isLoading }
-}
-
-export function isValidIp(ip) {
-  if (!ip) return false
-  let hasMatch = ip.match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gm)
-  return !!hasMatch
 }
 
 // Thunk Actions
 // NOTE: do NOT use inline actions, ALWAYS call a plain action to dispatch
-export function saveServerIp(ip) {
+function saveServerIp(ip) {
   return async dispatch => {
     let errorMessage = `Invalid Ip Address ${ip}`
     if (!isValidIp(ip)) return dispatch(setErrorMessage(errorMessage))
@@ -48,6 +44,15 @@ export function saveServerIp(ip) {
       dispatch(setErrorMessage(errorMessage))
     }
   }
+}
+
+// WARNING: if you do not export your actions, they will not be available in the component
+export const actions = {
+  setTextInputVal,
+  setErrorMessage,
+  setServerIp,
+  setIsLoading,
+  saveServerIp,
 }
 
 // Reducers

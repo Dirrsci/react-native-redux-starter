@@ -3,12 +3,11 @@ import { connect, } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
 import { View, Text, StyleSheet, ScrollView, TextInput, Button, AsyncStorage } from 'react-native'
 
+import Store from '../../store'
 import { composeComponent } from '../../utils'
 import { injectReducer, } from '../../store/reducers'
-// we import all the exports from the modules folder for our actions and reducer
-import * as modules from './modules'
-let mapDispatchToProps = { ...modules }
-let reducer = modules.default
+// import our reducers and actions to 'connect' them with redux
+import reducer, { actions } from './modules'
 
 import styles from './styles'
 
@@ -31,21 +30,21 @@ class ServerInput extends Component {
     let storedSterverIp = await AsyncStorage.getItem('@Storage:serverIp')
     this.props.saveServerIp(storedSterverIp)
     this.props.setIsLoading(false)
-    // if (!this.props.serverInput.hasError) this.goToNextPage()
+    // if (!this.props.ServerInput.hasError) this.goToNextPage()
   }
 
   async onSave() {
-    let { inputText } = this.props.serverInput
+    let { inputText } = this.props.ServerInput
     this.props.saveServerIp(inputText)
-    this.goToNextPage()
+    // this.goToNextPage()
   }
 
   render() {
-    let { serverIp, inputText, hasError, errorMessage, isLoading } = this.props.serverInput
+    let { serverIp, inputText, hasError, errorMessage, isLoading } = this.props.ServerInput
     if (isLoading) return null
     return (
       <View style={styles.container}>
-        <Text>{ this.props.serverInput.serverIp }</Text>
+        <Text>{ this.props.ServerInput.serverIp }</Text>
         <TextInput
           style={styles.textInput}
           placeholder='Enter Server IP'
@@ -62,19 +61,19 @@ class ServerInput extends Component {
     )
   }
 }
-
+// pageKey defines the namespace with which this components redux values will be stored under
+const pageKey = 'ServerInput'
+// mapDispatchToProps is an object with all actions we want to be available through redux
+const mapDispatchToProps = { ...actions }
+// mapStateToProps retreives any state variables (from any page) that we might need
 function mapStateToProps(state) {
   return {
-    serverInput: state.serverInput,
+    ServerInput: state[pageKey],
   }
 }
-
-// this function allows us to inject this page's reducer into the rootReducer as
-// well as connect it to our redux store. composeComponent is used to add any
-// additional wrappers the component may need. These are passed in the router
-export default function(store) {
-  injectReducer(store, { key: 'serverInput', reducer, })
-  // we return a function that our router can call with an array of component wrappers
-  let connectFunc = connect(mapStateToProps, mapDispatchToProps)
-  return composeComponent(connectFunc, ServerInput)
-}
+// injectReducer injects this page's reducers into the global reducer
+injectReducer(Store, { key: pageKey, reducer, })
+// calling 'connect' glues this component to redux with the given mappings
+ServerInput = connect(mapStateToProps, mapDispatchToProps)(ServerInput)
+// composeComponent will add any higher order components that we specify in the router
+export default composeComponent(ServerInput)

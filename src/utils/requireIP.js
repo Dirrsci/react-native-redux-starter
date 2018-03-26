@@ -4,28 +4,29 @@ import { View } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 
 export default function requiresIp(Component) {
-
   class RequireIP extends React.Component {
     componentDidMount() {
-      if (!this.props.serverIp) {
-        // we use resetAction to clear the navigation stack prevent 'back' button from appearing
-        let resetAction = NavigationActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: 'ServerInput' })]
-        })
-        this.props.navigation.dispatch(resetAction)
-      }
+      console.log('yeah I got here', !this.props.serverIp)
+      // if (!this.props.serverIp) {
+      //   // we use resetAction to clear the navigation stack prevent 'back' button from appearing
+      //   let resetAction = NavigationActions.reset({
+      //     index: 0,
+      //     actions: [NavigationActions.navigate({ routeName: 'ServerInput' })]
+      //   })
+      //   this.props.navigation.dispatch(resetAction)
+      // }
     }
     render() {
+      // <View>{ this.props.serverIp ? <Component {...this.props} /> : null }</View>
       return (
-        <View>{ this.props.serverIp ? <Component {...this.props} /> : null }</View>
+        <Component {...this.props} />
       )
     }
   }
 
   const mapStateToProps = (state) => {
     return {
-      serverIp: state.serverInput.serverIp
+      serverIp: state.ServerInput.serverIp
     }
   }
 
