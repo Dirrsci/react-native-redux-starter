@@ -9,22 +9,19 @@ import Equipment from './Equipment'
 import requireIp from '../utils/requireIP'
 
 /*
-Every route that needs access to Redux must be passed the "Store" to connect to
-You can then call the
-
-each Top level "page" uses react-navigation, so see their docs if you need to make
+each "page" uses react-navigation, so see their docs if you need to make
 any navigation changes
 */
 const Router = StackNavigator({
+  Equipment: {
+    screen: Equipment([ requireIp ])
+  },
   ServerInput: {
     // TODO: need to find a way to handle the nativation header
     screen: ServerInput([ ])
   },
-  Equipment: {
-    screen: Equipment([ requireIp ])
-  }
 }, {
-  initialRouteName: 'ServerInput',
+  initialRouteName: 'Equipment',
 })
 
 export default Router

@@ -1,4 +1,5 @@
 import { combineReducers, } from 'redux'
+import AsyncStorageReducer from './AsyncStorage'
 /* import any global reducers here */
 
 /*
@@ -19,12 +20,13 @@ are returns them to the store. The store uses these combined reducers to create 
 */
 export const makeRootReducer = (asyncReducers) => {
   // TODO: when global reducers are added (like auth) we can get rid of this fake initialization
-  if (!asyncReducers) {
-    asyncReducers = {
-      test1: (state = 0, action) => state,
-    }
-  }
+  // if (!asyncReducers) {
+  //   asyncReducers = {
+  //     test1: (state = 0, action) => state,
+  //   }
+  // }
   return combineReducers({
+    AsyncStorage: AsyncStorageReducer,
     ...asyncReducers,
   })
 }

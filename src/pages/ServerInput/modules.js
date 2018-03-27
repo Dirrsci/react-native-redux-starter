@@ -9,10 +9,9 @@ import { AsyncStorage } from 'react-native'
 import { isValidIp } from '../../utils'
 
 // Action types (these are global and shoudln't be reused from other pages)
-export const SERVER_INPUT__SET_SERVER_IP = 'SERVER_INPUT__SET_SERVER_IP'
 export const SERVER_INPUT__SET_INPUT_TEXT = 'SERVER_INPUT__SET_INPUT_TEXT'
 export const SERVER_INPUT__SET_ERROR = 'SERVER_INPUT__SET_ERROR'
-export const SERVER_INPUT__SET_IS_LOADING  = 'SERVER_INPUT__SET_IS_LOADING'
+export const SERVER_INPUT__SET_IS_LOADING = 'SERVER_INPUT__SET_IS_LOADING'
 
 // Plain Actions
 function setTextInputVal(text) {
@@ -23,36 +22,18 @@ function setErrorMessage(err) {
   return { type: SERVER_INPUT__SET_ERROR, payload: err }
 }
 
-function setServerIp(ip) {
-  return { type: SERVER_INPUT__SET_SERVER_IP, payload: ip }
-}
-
 function setIsLoading(isLoading) {
   return { type: SERVER_INPUT__SET_IS_LOADING, payload: isLoading }
 }
 
 // Thunk Actions
 // NOTE: do NOT use inline actions, ALWAYS call a plain action to dispatch
-function saveServerIp(ip) {
-  return async dispatch => {
-    let errorMessage = `Invalid Ip Address ${ip}`
-    if (!isValidIp(ip)) return dispatch(setErrorMessage(errorMessage))
-    try {
-      await AsyncStorage.setItem('@Storage:serverIp', ip)
-      dispatch(setServerIp(ip))
-    } catch (e) {
-      dispatch(setErrorMessage(errorMessage))
-    }
-  }
-}
 
 // WARNING: if you do not export your actions, they will not be available in the component
 export const actions = {
   setTextInputVal,
   setErrorMessage,
-  setServerIp,
   setIsLoading,
-  saveServerIp,
 }
 
 // Reducers
@@ -61,15 +42,6 @@ export const REDUCERS = {
     return {
       ...state,
       inputText: action.payload,
-      hasError: false,
-      errorMessage: null,
-    }
-  },
-  [SERVER_INPUT__SET_SERVER_IP]: (state, action) => {
-    return {
-      ...state,
-      serverIp: action.payload,
-      // inputText: '',
       hasError: false,
       errorMessage: null,
     }
@@ -83,6 +55,7 @@ export const REDUCERS = {
   [SERVER_INPUT__SET_ERROR]: (state, action) => {
     return {
       ...state,
+      isLoading: false,
       hasError: true,
       errorMessage: action.payload,
     }
@@ -95,7 +68,7 @@ const initialState = {
   inputText: '',
   hasError: false,
   errorMessage: null,
-  isLoading: true, // first action is to load ip from memory, so we can assume this from the start
+  isLoading: false,
 }
 
 // when an action gets dispatched callReducer will invoke the reducer that corresponds

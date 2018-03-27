@@ -1,6 +1,7 @@
 import React, { Component, } from 'react'
 import { connect, } from 'react-redux'
-import { View, Text, StyleSheet, } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TextInput, Button, AsyncStorage } from 'react-native'
+import { NavigationActions } from 'react-navigation'
 
 import Store from '../../store'
 import { composeComponent } from '../../utils'
@@ -11,6 +12,22 @@ import reducer, { actions, } from './modules'
 class Equipment extends Component {
   static navigationOptions = {
     title: 'Equipment',
+  }
+
+  goToServerInputPage() {
+    // we use resetAction to empty the navigation stack prevent 'back' button from appearing
+    let resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'ServerInput' })]
+    })
+    this.props.navigation.dispatch(resetAction)
+  }
+
+  async componentDidMount() {
+    let storedSterverIp = await AsyncStorage.getItem('@Storage:serverIp')
+    this.props.saveServerIp(storedSterverIp)
+    this.props.setIsLoading(false)
+    if (!this.props.Equipment.hasError) this.goToServerInputPage()
   }
 
   render() {
@@ -26,7 +43,7 @@ const pageKey = 'Equipment'
 const mapDispatchToProps = { ...actions }
 function mapStateToProps(state) {
   return {
-    Equipment: state[Equipment],
+    Equipment: state[pageKey],
     serverIp: state.ServerInput.serverIp
   }
 }

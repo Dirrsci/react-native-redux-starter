@@ -1,50 +1,77 @@
 import React, { Component, } from 'react'
 import { connect, } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
-import { View, Text, StyleSheet, ScrollView, TextInput, Button, AsyncStorage } from 'react-native'
+import { View, Text, TextInput, Button } from 'react-native'
 
-import Store from '../../store'
-import { composeComponent } from '../../utils'
-import { injectReducer, } from '../../store/reducers'
 // import our reducers and actions to 'connect' them with redux
 import reducer, { actions } from './modules'
 
+import { Loading } from '../../components'
+import Store from '../../store'
+import { composeComponent, isValidIp } from '../../utils'
+import { injectReducer, } from '../../store/reducers'
+
+const AsyncStorageActions = require('../../store/AsyncStorage').actions
+
 import styles from './styles'
 
+// PageKey defines the namespace with which this components redux values will be stored under
+const PageKey = 'ServerInput'
 class ServerInput extends Component {
   static navigationOptions = {
     title: 'Enter IP Address',
   }
 
-  goToNextPage() {
+  goToEquipmentPage() {
     // we use resetAction to empty the navigation stack prevent 'back' button from appearing
-    let resetAction = NavigationActions.reset({
+    const resetAction = NavigationActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'Equipment' })]
     })
     this.props.navigation.dispatch(resetAction)
   }
 
-  // set Redux state if an ip address has already been saved to memory
-  async componentDidMount() {
-    let storedSterverIp = await AsyncStorage.getItem('@Storage:serverIp')
-    this.props.saveServerIp(storedSterverIp)
-    this.props.setIsLoading(false)
-    // if (!this.props.ServerInput.hasError) this.goToNextPage()
+  componentDidUpdate() {
+    const { hasError, cache } = this.props.AsyncStorage
+    if (!hasError && isValidIp(cache['@Storage:serverIp'])) {
+      this.goToEquipmentPage()
+    }
   }
 
-  async onSave() {
-    let { inputText } = this.props.ServerInput
-    this.props.saveServerIp(inputText)
-    // this.goToNextPage()
+  onSave() {
+    const { inputText } = this.props.ServerInput
+    if (!isValidIp(inputText)) return this.props.setErrorMessage('invalid ip address')
+    this.props.setAndCache('@Storage:serverIp', inputText)
+  }
+
+  renderErrors() {
+    const { hasError, errorMessage } = this.props.ServerInput
+    if ( hasError || this.props.AsyncStorage.hasError) {
+      const errorMessages = [ this.props.AsyncStorage.errorMessage, errorMessage ]
+      return (
+        <View>
+          { errorMessages.map((errMsg, i) => {
+              return (
+                <Text key={i}>{errMsg}</Text>
+              )
+            })
+          }
+        </View>
+      )
+    }
+    return null
   }
 
   render() {
-    let { serverIp, inputText, hasError, errorMessage, isLoading } = this.props.ServerInput
-    if (isLoading) return null
+    const { inputText } = this.props.ServerInput
+    const { cache, isLoading } = this.props.AsyncStorage
+    const serverIp = cache['@Storage:serverIp']
+
+    if (isLoading) return <Loading />
+
     return (
       <View style={styles.container}>
-        <Text>{ this.props.ServerInput.serverIp }</Text>
+        <Text>Server Ip: { serverIp }</Text>
         <TextInput
           style={styles.textInput}
           placeholder='Enter Server IP'
@@ -56,23 +83,22 @@ class ServerInput extends Component {
           color='#841584'
           accessibilityLabel='Save Server IP Address'
         />
-        <Text style={styles.error}>{ hasError && errorMessage }</Text>
+        { this.renderErrors() }
       </View>
     )
   }
 }
-// pageKey defines the namespace with which this components redux values will be stored under
-const pageKey = 'ServerInput'
 // mapDispatchToProps is an object with all actions we want to be available through redux
-const mapDispatchToProps = { ...actions }
+const mapDispatchToProps = { ...actions, ...AsyncStorageActions }
 // mapStateToProps retreives any state variables (from any page) that we might need
 function mapStateToProps(state) {
   return {
-    ServerInput: state[pageKey],
+    ServerInput: state[PageKey],
+    AsyncStorage: state.AsyncStorage
   }
 }
 // injectReducer injects this page's reducers into the global reducer
-injectReducer(Store, { key: pageKey, reducer, })
+injectReducer(Store, { key: PageKey, reducer, })
 // calling 'connect' glues this component to redux with the given mappings
 ServerInput = connect(mapStateToProps, mapDispatchToProps)(ServerInput)
 // composeComponent will add any higher order components that we specify in the router
