@@ -26,7 +26,6 @@ function setIsLoading(isLoading) {
 
 // Plain Actions
 
-
 // Thunk Actions
 // NOTE: do NOT use inline actions, ALWAYS call a plain action to dispatch
 
@@ -35,10 +34,8 @@ function getAndCache(key) {
   return async(dispatch) => {
     dispatch(setIsLoading(true))
     try {
-      setTimeout(async() => {
-        const storedValue = await AsyncStorage.getItem(key)
-        dispatch(cacheValue(key, storedValue))
-      }, 5000)
+      const storedValue = await AsyncStorage.getItem(key)
+      dispatch(cacheValue(key, storedValue))
     } catch (e) {
       dispatch(setError(e.message))
     }
@@ -49,10 +46,8 @@ function setAndCache(key, val) {
   return async dispatch => {
     dispatch(setIsLoading(true))
     try {
-      setTimeout(async() => {
-        await AsyncStorage.setItem(key, val)
-        dispatch(cacheValue(key, val))
-      }, 5000)
+      await AsyncStorage.setItem(key, val)
+      dispatch(cacheValue(key, val))
     } catch (e) {
       dispatch(setError(e.message))
     }

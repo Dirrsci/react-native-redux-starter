@@ -29,7 +29,6 @@ export default function requiresIp(Component) {
     render() {
       const { isLoading, cache } = this.props.AsyncStorage
       if (isLoading) return <Loading />
-
       return this.props.serverIp ? <Component {...this.props} /> : null
     }
   }

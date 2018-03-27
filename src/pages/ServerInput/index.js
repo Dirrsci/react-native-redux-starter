@@ -50,12 +50,7 @@ class ServerInput extends Component {
       const errorMessages = [ this.props.AsyncStorage.errorMessage, errorMessage ]
       return (
         <View>
-          { errorMessages.map((errMsg, i) => {
-              return (
-                <Text key={i}>{errMsg}</Text>
-              )
-            })
-          }
+          { errorMessages.map((errMsg, i) => (<Text key={i}>{errMsg}</Text>)) }
         </View>
       )
     }
@@ -63,11 +58,10 @@ class ServerInput extends Component {
   }
 
   render() {
-    const { inputText } = this.props.ServerInput
-    const { cache, isLoading } = this.props.AsyncStorage
-    const serverIp = cache['@Storage:serverIp']
+    const { inputText, isLoading } = this.props.ServerInput
+    const serverIp = this.props.AsyncStorage.cache['@Storage:serverIp']
 
-    if (isLoading) return <Loading />
+    if (this.props.AsyncStorage.isLoading || isLoading) return <Loading />
 
     return (
       <View style={styles.container}>
