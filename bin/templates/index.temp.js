@@ -1,3 +1,5 @@
+export default (name) => {
+  return `
 import React, { Component, } from 'react'
 import { connect, } from 'react-redux'
 import { View, Text, StyleSheet, ScrollView, TextInput, Button, AsyncStorage } from 'react-native'
@@ -9,15 +11,15 @@ import { injectReducer, } from '../../store/reducers'
 // we import all the exports from the modules folder for our actions and reducer
 import reducer, { actions, } from './modules'
 
-class Equipment extends Component {
+class ${name} extends Component {
   static navigationOptions = {
-    title: 'Equipment',
+    title: '${name}',
   }
 
   render() {
     return (
       <View>
-        <Text>THIS IS THE EQUIPMENT PAGE {this.props.serverIp}</Text>
+        <Text>THIS IS THE ${name} PAGE</Text>
       </View>
     )
   }
@@ -26,10 +28,11 @@ class Equipment extends Component {
 const mapDispatchToProps = { ...actions }
 function mapStateToProps(state) {
   return {
-    Equipment: state.Equipment,
-    serverIp: state.AsyncStorage.cache['@Storage:serverIp'],
+    ${name}: state.${name},
   }
 }
-injectReducer(Store, { key: 'Equipment', reducer, })
-Equipment = connect(mapStateToProps, mapDispatchToProps)(Equipment)
-export default composeComponent(Equipment)
+injectReducer(Store, { key: '${name}', reducer, })
+${name} = connect(mapStateToProps, mapDispatchToProps)(${name})
+export default composeComponent(${name})
+`
+}

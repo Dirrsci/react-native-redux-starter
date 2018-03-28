@@ -1,15 +1,17 @@
+export default (name) => {
+  const uppercaseName = name.toUpperCase()
+  return `
 /*
 This file acts as a single place to place a page's actions and reducers. I find this much
 cleaner since all the related files will be next to one another
 */
-import axios from 'axios'
 
 // Action types (these are global and shoudln't be reused from other pages)
-export const EQUIPMENT__MY_ACTION = 'EQUIPMENT__MY_ACTION'
+export const ${uppercaseName}__MY_ACTION = '$uppercaseName}__MY_ACTION'
 
 // Plain Actions
 function myPlainAction(arg) {
-  return { type: EQUIPMENT__MY_ACTION, payload: arg }
+  return { type: ${uppercaseName}__MY_ACTION, payload: arg }
 }
 
 // Thunk Actions (async actions)
@@ -34,7 +36,7 @@ export const actions = {
 
 // Reducers
 export const REDUCERS = {
-  [EQUIPMENT__MY_ACTION]: (state, action) => {
+  [${uppercaseName}__MY_ACTION]: (state, action) => {
     return {
       ...state,
     }
@@ -50,4 +52,7 @@ const initialState = {
 export default function callReducer(state = initialState, action) {
   const handler = REDUCERS[action.type]
   return handler ? handler(state, action) : state
+}
+
+`
 }

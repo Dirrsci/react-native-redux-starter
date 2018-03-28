@@ -15,8 +15,6 @@ const AsyncStorageActions = require('../../store/AsyncStorage').actions
 
 import styles from './styles'
 
-// PageKey defines the namespace with which this components redux values will be stored under
-const PageKey = 'ServerInput'
 class ServerInput extends Component {
   static navigationOptions = {
     title: 'Enter IP Address',
@@ -87,12 +85,12 @@ const mapDispatchToProps = { ...actions, ...AsyncStorageActions }
 // mapStateToProps retreives any state variables (from any page) that we might need
 function mapStateToProps(state) {
   return {
-    ServerInput: state[PageKey],
+    ServerInput: state.ServerInput,
     AsyncStorage: state.AsyncStorage
   }
 }
 // injectReducer injects this page's reducers into the global reducer
-injectReducer(Store, { key: PageKey, reducer, })
+injectReducer(Store, { key: 'ServerInput', reducer, })
 // calling 'connect' glues this component to redux with the given mappings
 ServerInput = connect(mapStateToProps, mapDispatchToProps)(ServerInput)
 // composeComponent will add any higher order components that we specify in the router

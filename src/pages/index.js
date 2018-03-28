@@ -15,11 +15,9 @@ any navigation changes
 */
 const Router = StackNavigator({
   Equipment: {
-    // screen: Equipment([ ])
     screen: Equipment([ requireIp ])
   },
   ServerInput: {
-    // TODO: need to find a way to handle the nativation header
     screen: ServerInput([ ])
   },
 }, {
