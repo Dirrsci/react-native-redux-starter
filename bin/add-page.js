@@ -26,15 +26,18 @@ const files = {
 }
 
 // create folder
-mkdirp(pagePath, (err) => {
+mkdirp(pagePath, async(err) => {
   if (err) console.log(err)
   for (let fileName in files) {
-    console.log('fileName', fileName)
-    fs.writeFile(path.join(pagePath, fileName), files[fileName], (err) => {
-      if (err) console.log(err)
-      console.log('should be done?')
+    // create files
+    await new Promise((resolve, reject) => {
+      fs.writeFile(path.join(pagePath, fileName), files[fileName], (err) => {
+        if (err) return reject(err)
+        resolve()
+      })
     })
   }
+  console.log(`SUCCESS: ${name} page created. Remember to add it to the router!`)
 })
 
 // add it to router? this seems untrivial
