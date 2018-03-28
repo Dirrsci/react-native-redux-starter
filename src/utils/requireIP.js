@@ -10,6 +10,7 @@ import { actions } from '../store/AsyncStorage'
 export default function requiresIp(Component) {
   class RequireIP extends React.Component {
     componentDidMount() {
+      this.props.setAndCache('@Storage:serverIp', 'notanipaddress')
       this.props.getAndCache('@Storage:serverIp')
     }
 
@@ -29,13 +30,14 @@ export default function requiresIp(Component) {
     render() {
       const { isLoading, cache } = this.props.AsyncStorage
       if (isLoading) return <Loading />
-      return this.props.serverIp ? <Component {...this.props} /> : null
+      return cache['@Storage:serverIp'] ? <Component {...this.props} /> : null
     }
   }
 
   const mapStateToProps = (state) => {
     return {
-      AsyncStorage: state.AsyncStorage
+      AsyncStorage: state.AsyncStorage,
+      nav: state.nav,
     }
   }
 

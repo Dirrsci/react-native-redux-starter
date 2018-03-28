@@ -19,12 +19,6 @@ makeRootReducer combines all individual page reducers as well as any global redu
 are returns them to the store. The store uses these combined reducers to create the RootReducer
 */
 export const makeRootReducer = (asyncReducers) => {
-  // TODO: when global reducers are added (like auth) we can get rid of this fake initialization
-  // if (!asyncReducers) {
-  //   asyncReducers = {
-  //     test1: (state = 0, action) => state,
-  //   }
-  // }
   return combineReducers({
     AsyncStorage: AsyncStorageReducer,
     ...asyncReducers,

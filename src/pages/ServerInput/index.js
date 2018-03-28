@@ -46,7 +46,7 @@ class ServerInput extends Component {
 
   renderErrors() {
     const { hasError, errorMessage } = this.props.ServerInput
-    if ( hasError || this.props.AsyncStorage.hasError) {
+    if (hasError || this.props.AsyncStorage.hasError) {
       const errorMessages = [ this.props.AsyncStorage.errorMessage, errorMessage ]
       return (
         <View>

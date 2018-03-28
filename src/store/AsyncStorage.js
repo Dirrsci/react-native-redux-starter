@@ -34,8 +34,10 @@ function getAndCache(key) {
   return async(dispatch) => {
     dispatch(setIsLoading(true))
     try {
-      const storedValue = await AsyncStorage.getItem(key)
-      dispatch(cacheValue(key, storedValue))
+      setTimeout(async() => {
+        const storedValue = await AsyncStorage.getItem(key)
+        dispatch(cacheValue(key, storedValue))
+      }, 3000)
     } catch (e) {
       dispatch(setError(e.message))
     }
@@ -46,8 +48,10 @@ function setAndCache(key, val) {
   return async dispatch => {
     dispatch(setIsLoading(true))
     try {
-      await AsyncStorage.setItem(key, val)
-      dispatch(cacheValue(key, val))
+      setTimeout(async() => {
+        await AsyncStorage.setItem(key, val)
+        dispatch(cacheValue(key, val))
+      }, 6000)
     } catch (e) {
       dispatch(setError(e.message))
     }

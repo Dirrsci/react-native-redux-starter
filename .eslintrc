@@ -19,7 +19,8 @@
     "semi": [ 2, "never" ],
     "no-eval": [ 2 ],
     "no-multi-spaces": [ 2 ],
-    "no-undef": [ 2 ]
+    "no-undef": [ 2 ],
+    "quotes": [ 2, "single" ],
   },
   "parserOptions": {
     "ecmaVersion": 7,
