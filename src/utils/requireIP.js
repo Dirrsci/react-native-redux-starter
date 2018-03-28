@@ -36,7 +36,6 @@ export default function requiresIp(Component) {
   const mapStateToProps = (state) => {
     return {
       AsyncStorage: state.AsyncStorage,
-      nav: state.nav,
     }
   }
 
