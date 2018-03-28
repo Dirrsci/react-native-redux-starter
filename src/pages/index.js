@@ -4,10 +4,10 @@ import { View, Text, StyleSheet, ScrollView, TextInput, Button, AsyncStorage } f
 
 import { injectReducer } from '../store/reducers'
 import Store from '../store'
+import requireIp from '../utils/requireIP'
+
 import ServerInput from './ServerInput'
 import Equipment from './Equipment'
-
-import requireIp from '../utils/requireIP'
 
 /*
 each "page" uses react-navigation, so see their docs if you need to make

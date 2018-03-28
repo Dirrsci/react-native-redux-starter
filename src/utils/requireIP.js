@@ -21,7 +21,7 @@ export default function requiresIp(Component) {
         // we use resetAction to clear the navigation stack prevent 'back' button from appearing
         const resetAction = NavigationActions.reset({
           index: 0,
-          actions: [NavigationActions.navigate({ routeName: 'ServerInput' })]
+          actions: [NavigationActions.navigate({ routeName: 'Test' })]
         })
         this.props.navigation.dispatch(resetAction)
       }

@@ -6,20 +6,16 @@ Create folder structure
     test.js
     styles.js
 */
-import templates from './templates'
-import { capitalizeFirstLetter } from '../src/utils'
 import mkdirp from 'mkdirp'
 import path from 'path'
+import fs from 'fs'
+
+import templates from './templates'
+import { capitalizeFirstLetter } from '../src/utils'
 
 const name = capitalizeFirstLetter(process.argv[2])
 
-const pagePath = path.join(__dirname, '../src/pages/testfolder')
-
-// create folder
-mkdirp(pagePath, (err) => {
-  if (err) console.log(err)
-  console.log('herere niii')
-})
+const pagePath = path.join(__dirname, `../src/pages/${name}`)
 
 // create files
 const files = {
@@ -28,5 +24,17 @@ const files = {
   'test.js': templates.testTemplate(name),
   'styles.js': templates.stylesTemplate()
 }
+
+// create folder
+mkdirp(pagePath, (err) => {
+  if (err) console.log(err)
+  for (let fileName in files) {
+    console.log('fileName', fileName)
+    fs.writeFile(path.join(pagePath, fileName), files[fileName], (err) => {
+      if (err) console.log(err)
+      console.log('should be done?')
+    })
+  }
+})
 
 // add it to router? this seems untrivial
